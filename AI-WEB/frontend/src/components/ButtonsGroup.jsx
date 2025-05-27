@@ -1,3 +1,4 @@
+// frontend/src/components/ButtonsGroup.jsx
 import React from "react";
 export default function ButtonsGroup({ options, selected, onSelect }) {
   if (!Array.isArray(options)) return null;

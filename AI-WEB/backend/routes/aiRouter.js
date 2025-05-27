@@ -1,3 +1,4 @@
+// backend/routes/aiRouter.js
 const express = require('express');
 const fileApi = require('../utils/fileApi');
 const openaiApi = require('../utils/openaiApi');
@@ -5,9 +6,9 @@ const openaiApi = require('../utils/openaiApi');
 const router = express.Router();
 
 /**
- * Genera una risposta da OpenAI basata sul prompt fornito dall'utente.
- * Opzionalmente, include i contenuti di uno o più file allegati.
- * Corpo della richiesta (JSON): { prompt: string, filenames?: [string] }
+ * POST /api/ai/generate
+ * Corpo: { prompt: string, filenames?: [string] }
+ * Aggiunge il contenuto dei file al prompt e genera l'interfaccia AI.
  */
 router.post('/generate', async (req, res) => {
   try {
@@ -16,9 +17,7 @@ router.post('/generate', async (req, res) => {
     if (!prompt) {
       return res.status(400).json({ error: 'Il prompt è obbligatorio' });
     }
-
     let finalPrompt = prompt;
-    // Se ci sono file allegati, leggine il contenuto e aggiungilo al prompt
     if (filenames && Array.isArray(filenames) && filenames.length > 0) {
       let combinedContent = '';
       for (const name of filenames) {
@@ -31,7 +30,6 @@ router.post('/generate', async (req, res) => {
       }
       finalPrompt += '\n\nContenuto dei file allegati:\n' + combinedContent;
     }
-
     const result = await openaiApi.generate(finalPrompt);
     res.json({ result });
   } catch (error) {
@@ -41,8 +39,9 @@ router.post('/generate', async (req, res) => {
 });
 
 /**
- * Analizza il contenuto di un file utilizzando OpenAI (ad es. sommario o insight).
- * Corpo della richiesta (JSON): { filename: string }
+ * POST /api/ai/analyze
+ * Corpo: { filename: string }
+ * Analizza il contenuto di un file tramite OpenAI (e.g. sommario).
  */
 router.post('/analyze', async (req, res) => {
   try {
@@ -51,7 +50,6 @@ router.post('/analyze', async (req, res) => {
     if (!filename) {
       return res.status(400).json({ error: 'Il nome del file è obbligatorio' });
     }
-
     let contentBuffer;
     try {
       contentBuffer = await fileApi.getFileContent(userId, filename);
@@ -59,7 +57,6 @@ router.post('/analyze', async (req, res) => {
       return res.status(400).json({ error: `Impossibile leggere il file: ${filename}` });
     }
     const content = contentBuffer.toString();
-
     const analysis = await openaiApi.analyze(content);
     res.json({ analysis });
   } catch (error) {

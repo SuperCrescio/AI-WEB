@@ -1,3 +1,4 @@
+// frontend/src/components/Dropdown.jsx
 import React from "react";
 export default function Dropdown({ options, value, onSelect, label }) {
   if (!Array.isArray(options)) return null;

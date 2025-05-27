@@ -1,10 +1,11 @@
+// frontend/src/components/PreviewPanel.jsx
 import React, { useState } from "react";
 import {
   Text, Card, Chart, ButtonsGroup, Dropdown, Slider, Timer, Stepper,
   Menu, Switch, UserBubble, NotificationStack
-} from "./index";
+} from "./index"; // Assicurarsi che index.js esporti tutti i componenti
 
-// Mappa type JSON → componente React reale
+// Mappa tipi stringa → componente React
 const COMPONENTS = {
   text:    Text,
   card:    Card,
@@ -17,27 +18,23 @@ const COMPONENTS = {
   menu:    Menu,
   switch:  Switch,
   userbubble: UserBubble,
-  notification: null, // handled via NotificationStack
-  // Aggiungi altri qui...
+  notification: null, // gestito separatamente
+  // Altri tipi possono essere aggiunti
 };
 
-/**
- * Dato l'output JSON, genera l'albero UI dinamico
- * Output può essere: array di elementi, oggetto unico, ecc.
- */
+// Renderizza un singolo elemento UI dall’output AI
 function renderElement(elem, idx, onAction, setNotification) {
   if (!elem || typeof elem !== "object") return null;
-  // Notification? Usa lo stack notifiche.
+  // Notifica speciale
   if (elem.type === "notification") {
     setNotification(n => [...n, { ...elem, id: Date.now() + idx }]);
     return null;
   }
   const Comp = COMPONENTS[elem.type?.toLowerCase()];
   if (!Comp) {
-    // Se non c'è tipo noto, mostra il JSON raw.
+    // Se tipo non riconosciuto, mostra JSON grezzo
     return <Text key={idx} content={JSON.stringify(elem, null, 2)} />;
   }
-  // Tutti gli handler (su bottoni, selezioni, ecc) possono chiamare onAction
   return (
     <Comp
       key={elem.id || idx}
@@ -50,14 +47,12 @@ function renderElement(elem, idx, onAction, setNotification) {
 
 export default function PreviewPanel({ output }) {
   const [notifications, setNotifications] = useState([]);
-  const [userSelection, setUserSelection] = useState(null);
-
-  // Supporta output: array, oggetto singolo o testo puro
+  // Parsing output AI (JSON) in elementi da renderizzare
   let elements = [];
   try {
     let data = typeof output === "string" ? JSON.parse(output) : output;
     if (Array.isArray(data)) elements = data;
-    else if (typeof data === "object" && data !== null) {
+    else if (data && typeof data === "object") {
       if (Array.isArray(data.ui)) elements = data.ui;
       else elements = [data];
     }
@@ -65,16 +60,14 @@ export default function PreviewPanel({ output }) {
     if (output) elements = [{ type: "text", content: output }];
   }
 
-  // Azioni (bottoni, dropdown, etc)
-  function handleAction(val, elem) {
-    setUserSelection({ ...elem, value: val });
-    // Puoi gestire azioni avanzate (es. invio verso AI) qui
-    // oppure propagare l’evento al parent se serve
-  }
+  // Handler di azioni UI (es. eventi pulsanti)
+  const handleAction = (value, elem) => {
+    console.log("Azione utente:", value, "dal componente:", elem);
+    // Esempio: si potrebbe triggerare analisi o altro
+  };
 
   return (
-    <div className="min-h-[80vh] bg-white dark:bg-gray-800 rounded p-6 shadow-inner overflow-y-auto">
-      <h2 className="font-bold text-lg mb-2">Anteprima AI-APP</h2>
+    <div>
       {elements.length > 0 ? (
         elements.map((elem, idx) =>
           renderElement(elem, idx, handleAction, setNotifications)
@@ -82,10 +75,11 @@ export default function PreviewPanel({ output }) {
       ) : (
         <div className="text-gray-400 italic">Genera la tua AI-APP!</div>
       )}
-      {/* Stack notifiche, persistente e richiamato da ogni UI */}
-      <NotificationStack notifications={notifications} onClose={id =>
-        setNotifications(n => n.filter(x => x.id !== id))
-      } />
+      {/* Notifiche persistenti */}
+      <NotificationStack
+        notifications={notifications}
+        onClose={id => setNotifications(n => n.filter(x => x.id !== id))}
+      />
     </div>
   );
 }

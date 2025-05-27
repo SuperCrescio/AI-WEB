@@ -1,10 +1,10 @@
+// backend/utils/auth.js
 const { createClient } = require('@supabase/supabase-js');
-
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 /**
  * Middleware per autenticazione JWT con Supabase.
- * Controlla l'header Authorization per un token Bearer, verifica l'utente e aggiunge req.user.
+ * Controlla l'header Authorization e aggiunge req.user.
  */
 async function authenticateToken(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -15,8 +15,8 @@ async function authenticateToken(req, res, next) {
   if (!token) {
     return res.status(401).json({ error: 'Token malformato' });
   }
-
   try {
+    // Verifica token con Supabase
     const { data: { user }, error } = await supabase.auth.api.getUser(token);
     if (error || !user) {
       return res.status(401).json({ error: 'Token non valido' });

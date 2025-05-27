@@ -1,3 +1,4 @@
+// frontend/src/components/UserBubble.jsx
 import React from "react";
 export default function UserBubble({ content }) {
   return (

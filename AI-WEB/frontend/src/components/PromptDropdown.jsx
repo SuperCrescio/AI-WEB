@@ -1,3 +1,4 @@
+// frontend/src/components/PromptDropdown.jsx
 import React from "react";
 export default function PromptDropdown({ promptList, selectedPrompt, onSelect }) {
   return (

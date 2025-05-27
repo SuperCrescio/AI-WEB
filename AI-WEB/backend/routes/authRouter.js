@@ -1,10 +1,11 @@
+// backend/routes/authRouter.js
 const express = require('express');
 const supabaseApi = require('../utils/supabaseApi');
 const authenticateToken = require('../utils/auth');
 
 const router = express.Router();
 
-// Registrazione utente (sign up)
+// Registrazione utente
 router.post('/register', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -39,10 +40,8 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Logout utente (richiede autenticazione per revocare token se necessario)
+// Logout utente (client elimina semplicemente il token)
 router.post('/logout', authenticateToken, async (req, res) => {
-  // Non esiste un endpoint di logout sul server per JWT stateless; 
-  // il client deve eliminare il token localmente.
   res.json({ message: 'Logout effettuato' });
 });
 

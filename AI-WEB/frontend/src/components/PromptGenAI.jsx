@@ -1,3 +1,4 @@
+// frontend/src/components/PromptGenAI.jsx
 import React, { useState } from "react";
 export default function PromptGenAI({ onGenerate }) {
   const [input, setInput] = useState("");
@@ -12,7 +13,6 @@ export default function PromptGenAI({ onGenerate }) {
       <button
         className="btn mt-1"
         onClick={() => {
-          // Finta generazione AI, sostituisci con chiamata reale se vuoi
           onGenerate("Prompt generato automaticamente per: " + input);
           setInput("");
         }}

@@ -1,9 +1,10 @@
+// backend/utils/fileApi.js
 const fs = require('fs');
 const path = require('path');
 
 /**
- * Restituisce un array dei nomi dei file caricati dall'utente.
- * Se la cartella dell'utente non esiste, restituisce un array vuoto.
+ * Restituisce la lista dei nomi dei file caricati dall'utente.
+ * Se la cartella dell'utente non esiste, restituisce [].
  */
 async function listFiles(userId) {
   const userDir = path.join(process.cwd(), 'uploads', userId);
@@ -14,7 +15,7 @@ async function listFiles(userId) {
 }
 
 /**
- * Costruisce il percorso assoluto del file di un utente dato userId e filename.
+ * Costruisce il percorso assoluto del file di un utente.
  */
 function getFilePath(userId, filename) {
   return path.join(process.cwd(), 'uploads', userId, filename);
@@ -28,8 +29,4 @@ async function getFileContent(userId, filename) {
   return fs.promises.readFile(filePath);
 }
 
-module.exports = {
-  listFiles,
-  getFilePath,
-  getFileContent,
-};
+module.exports = { listFiles, getFilePath, getFileContent };

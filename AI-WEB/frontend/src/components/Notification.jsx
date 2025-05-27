@@ -1,3 +1,4 @@
+// frontend/src/components/Notification.jsx
 import React from "react";
 export default function Notification({ type = "info", message, onClose }) {
   const colors = {

@@ -1,3 +1,4 @@
+// frontend/src/components/Timer.jsx
 import React, { useState, useEffect } from "react";
 export default function Timer({ initial = 60, label, onComplete }) {
   const [seconds, setSeconds] = useState(initial);

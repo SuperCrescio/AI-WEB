@@ -1,3 +1,4 @@
+// frontend/src/components/NotificationStack.jsx
 import React from "react";
 import Notification from "./Notification";
 export default function NotificationStack({ notifications = [], onClose }) {

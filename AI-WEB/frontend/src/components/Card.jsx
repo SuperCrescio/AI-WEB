@@ -1,3 +1,4 @@
+// frontend/src/components/Card.jsx
 import React from "react";
 export default function Card({ title, content, ...rest }) {
   return (

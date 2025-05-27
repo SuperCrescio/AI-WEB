@@ -1,7 +1,5 @@
-// Slider.jsx: Range slider per input numerico rapido (es. selezione peso, progressi, punteggi).
-
+// frontend/src/components/Slider.jsx
 import React from "react";
-
 export default function Slider({ min = 0, max = 100, step = 1, value, onChange, label }) {
   return (
     <div className="slider-bubble mb-2">

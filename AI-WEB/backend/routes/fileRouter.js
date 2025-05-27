@@ -1,3 +1,4 @@
+// backend/routes/fileRouter.js
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
@@ -6,29 +7,27 @@ const fileApi = require('../utils/fileApi');
 
 const router = express.Router();
 
-// Configurazione storage dinamica con Multer
+// Configurazione Multer per storage dinamico per utente
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const userId = req.user.id;
     const uploadPath = path.join(process.cwd(), 'uploads', userId);
-    // Crea la cartella dell'utente se non esiste
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath);
     }
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    // Usa un nome unico per il file (timestamp + nome originale)
     const uniqueName = Date.now() + '_' + file.originalname;
     cb(null, uniqueName);
   },
 });
 
-// Filtro tipi di file consentiti
+// Filtro estensioni consentite
 const fileFilter = (req, file, cb) => {
-  const allowedExtensions = ['.pdf', '.docx', '.doc', '.xlsx', '.xls', '.png', '.jpg', '.jpeg'];
+  const allowedExt = ['.pdf', '.docx', '.doc', '.xlsx', '.xls', '.png', '.jpg', '.jpeg'];
   const ext = path.extname(file.originalname).toLowerCase();
-  if (allowedExtensions.includes(ext)) {
+  if (allowedExt.includes(ext)) {
     cb(null, true);
   } else {
     cb(new Error('Tipo di file non consentito'), false);
@@ -37,8 +36,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-// Upload di un singolo file
-// Chiamare la rotte con form-data, campo 'file'
+// Upload singolo file
 router.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'Nessun file ricevuto' });
@@ -57,7 +55,7 @@ router.get('/list', async (req, res) => {
   }
 });
 
-// Download di un file (parametro: nome file)
+// Download di un file
 router.get('/download/:filename', (req, res) => {
   const userId = req.user.id;
   const filename = req.params.filename;

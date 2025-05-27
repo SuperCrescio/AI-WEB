@@ -1,3 +1,4 @@
+// frontend/src/components/Text.jsx
 import React from "react";
 export default function Text({ content }) {
   return (

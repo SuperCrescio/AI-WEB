@@ -1,10 +1,9 @@
+// backend/utils/supabaseApi.js
 const { createClient } = require('@supabase/supabase-js');
-
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
 /**
- * Registra un nuovo utente con email e password tramite Supabase Auth.
- * Ritorna l'oggetto user o lancia un errore.
+ * Registra un nuovo utente (email, password) tramite Supabase Auth.
  */
 async function signUp(email, password) {
   const { user, error } = await supabase.auth.signUp({ email, password });
@@ -13,8 +12,8 @@ async function signUp(email, password) {
 }
 
 /**
- * Effettua il login di un utente con email e password tramite Supabase Auth.
- * Ritorna un oggetto contenente user e session.
+ * Effettua il login di un utente (email, password) tramite Supabase Auth.
+ * Restituisce { user, session } con l'access_token (JWT).
  */
 async function signIn(email, password) {
   const { user, session, error } = await supabase.auth.signIn({ email, password });
@@ -22,7 +21,4 @@ async function signIn(email, password) {
   return { user, session };
 }
 
-module.exports = {
-  signUp,
-  signIn,
-};
+module.exports = { signUp, signIn };

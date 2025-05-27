@@ -1,6 +1,5 @@
+// frontend/src/components/Chart.jsx
 import React from "react";
-
-// Minimal: usa chart.js se vuoi, ma qui mostriamo dati in modo "universale" per AI-APP.
 export default function Chart({ data, labels, title, type = "bar", ...rest }) {
   if (!Array.isArray(data) || !Array.isArray(labels)) {
     return <div className="chart-bubble text-xs text-gray-500">Dati chart non validi</div>;
@@ -21,7 +20,9 @@ export default function Chart({ data, labels, title, type = "bar", ...rest }) {
             }}
             title={`${labels[i]}: ${val}`}
           >
-            <span className="block text-xs mt-2 text-center" style={{ writingMode: "vertical-lr" }}>{labels[i]}</span>
+            <span className="block text-xs mt-2 text-center" style={{ writingMode: "vertical-lr" }}>
+              {labels[i]}
+            </span>
           </div>
         ))}
       </div>

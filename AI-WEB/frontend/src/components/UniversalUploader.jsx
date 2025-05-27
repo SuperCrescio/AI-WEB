@@ -1,3 +1,4 @@
+// frontend/src/components/UniversalUploader.jsx
 import React, { useRef } from "react";
 export default function UniversalUploader({ onUpload }) {
   const ref = useRef();
@@ -12,10 +13,9 @@ export default function UniversalUploader({ onUpload }) {
           ref.current.value = "";
         }}
       />
-      <button
-        className="btn"
-        onClick={() => ref.current.click()}
-      >Carica file (PDF, Word, Excel, Immagine)</button>
+      <button className="btn" onClick={() => ref.current.click()}>
+        Carica file (PDF, Word, Excel, Immagine)
+      </button>
     </div>
   );
 }

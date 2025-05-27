@@ -1,3 +1,4 @@
+// frontend/src/components/PromptEditor.jsx
 import React from "react";
 export default function PromptEditor({ value, onChange }) {
   return (
