@@ -11,7 +11,7 @@ export const fileRouter = express.Router();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const userId = req.user.id;
-    const uploadDir = path.join(process.cwd(), 'backend', 'uploads', userId);
+    const uploadDir = path.join(process.cwd(), 'uploads', userId);
     fs.mkdirSync(uploadDir, { recursive: true });
     cb(null, uploadDir);
   },
