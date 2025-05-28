@@ -71,3 +71,32 @@ aiRouter.post('/chat', async (req, res) => {
     return res.status(500).json({ error: 'Errore durante la generazione della risposta AI' });
   }
 });
+
+aiRouter.post('/analyze', async (req, res) => {
+  const userId = req.user.id;
+  const { fileId } = req.body;
+  if (!fileId) {
+    return res.status(400).json({ error: 'fileId mancante' });
+  }
+  try {
+    const { data: files } = await supabaseAdmin
+      .from('files')
+      .select('filename, mimetype, path')
+      .eq('id', fileId)
+      .eq('user_id', userId);
+    if (!files || !files.length) {
+      return res.status(404).json({ error: 'File non trovato' });
+    }
+    const file = files[0];
+    const text = await extractTextFromFile(file.path, file.mimetype);
+    const snippet = text.substring(0, 2000);
+    const prompt = `Riassumi brevemente il seguente contenuto:\n"${snippet}"`;
+    const aiResponse = await askOpenAI([
+      { role: 'system', content: 'Sei un assistente AI' },
+      { role: 'user', content: prompt }
+    ]);
+    return res.json({ analysis: aiResponse });
+  } catch (err) {
+    return res.status(500).json({ error: 'Errore analisi file' });
+  }
+});

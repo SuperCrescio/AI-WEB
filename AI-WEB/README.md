@@ -10,8 +10,8 @@ Questa repository contiene l'applicazione **AI-WEB**. Il progetto permette di cr
 - Frontend reattivo con componenti dinamici
 
 ## Avvio rapido
-1. Copiare `.env.example` in `.env` e configurare le chiavi di Supabase e OpenAI.
-2. Installare le dipendenze nel backend e frontend (`npm install`).
-3. Avviare il backend con `node server.js` e il frontend con `npm run dev`.
+1. Copiare `backend/.env.example` in `backend/.env` e inserire le proprie chiavi Supabase e OpenAI.
+2. Installare le dipendenze eseguendo `npm install` dentro le cartelle `backend` e `frontend`.
+3. Avviare il backend con `npm start` (dalla cartella `backend`) e il frontend con `npm run dev` (dalla cartella `frontend`).
 
 Per maggiori dettagli consultare la documentazione nei singoli file del progetto.

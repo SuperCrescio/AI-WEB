@@ -3,7 +3,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 // Genera l'interfaccia AI (prompt + elenco file)
 export async function sendAIMessage({ prompt, filenames = [] }, token) {
-  const res = await fetch(`${API_URL}/ai/generate`, {
+  const res = await fetch(`${API_URL}/ai/chat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export async function analyzeFile({ filename }, token) {
 
 // Lista file utente
 export async function listFiles(token) {
-  const res = await fetch(`${API_URL}/file/list`, {
+  const res = await fetch(`${API_URL}/files`, {
     headers: { ...(token && { Authorization: `Bearer ${token}` }) },
   });
   const json = await res.json();
@@ -44,7 +44,7 @@ export async function listFiles(token) {
 export async function uploadFile(file, token) {
   const formData = new FormData();
   formData.append("file", file);
-  const res = await fetch(`${API_URL}/file/upload`, {
+  const res = await fetch(`${API_URL}/files`, {
     method: "POST",
     headers: { ...(token && { Authorization: `Bearer ${token}` }) },
     body: formData,
@@ -54,7 +54,7 @@ export async function uploadFile(file, token) {
 
 // Registrazione utente
 export async function registerUser(email, password) {
-  const res = await fetch(`${API_URL}/auth/register`, {
+  const res = await fetch(`${API_URL}/auth/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
