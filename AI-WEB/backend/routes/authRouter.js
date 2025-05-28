@@ -1,48 +1,42 @@
-// backend/routes/authRouter.js
-const express = require('express');
-const supabaseApi = require('../utils/supabaseApi');
-const authenticateToken = require('../utils/auth');
+import express from 'express';
+import { signUpWithEmail, signInWithEmail } from '../utils/auth.js';
 
-const router = express.Router();
+export const authRouter = express.Router();
 
-// Registrazione utente
-router.post('/register', async (req, res) => {
+authRouter.post('/signup', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ error: 'Email e password sono obbligatorie' });
+    return res.status(400).json({ error: 'Email e password sono richiesti' });
   }
   try {
-    const user = await supabaseApi.signUp(email, password);
-    return res.json({ message: 'Utente registrato', user });
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
+    const { user, session } = await signUpWithEmail(email, password);
+    return res.status(200).json({
+      message: 'Registrazione completata',
+      user: { id: user.id, email: user.email },
+      token: session?.access_token || null,
+    });
+  } catch (err) {
+    return res.status(400).json({ error: err.message || 'Errore registrazione' });
   }
 });
 
-// Login utente
-router.post('/login', async (req, res) => {
+authRouter.post('/login', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ error: 'Email e password sono obbligatorie' });
+    return res.status(400).json({ error: 'Credenziali mancanti' });
   }
   try {
-    const { user, session } = await supabaseApi.signIn(email, password);
-    if (!session) {
-      return res.status(401).json({ error: 'Credenziali non valide' });
-    }
-    return res.json({
-      message: 'Login effettuato',
+    const { user, session } = await signInWithEmail(email, password);
+    return res.status(200).json({
+      message: 'Login eseguito',
       user: { id: user.id, email: user.email },
       token: session.access_token,
     });
-  } catch (error) {
-    return res.status(401).json({ error: error.message });
+  } catch (err) {
+    return res.status(401).json({ error: err.message || 'Credenziali non valide' });
   }
 });
 
-// Logout utente (client elimina semplicemente il token)
-router.post('/logout', authenticateToken, async (req, res) => {
-  res.json({ message: 'Logout effettuato' });
+authRouter.post('/logout', async (req, res) => {
+  return res.status(200).json({ message: 'Logout effettuato' });
 });
-
-module.exports = router;
