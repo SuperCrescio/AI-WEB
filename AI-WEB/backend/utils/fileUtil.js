@@ -1,6 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import pdfParse from 'pdf-parse';
+// Import the parser directly to avoid executing the package's
+// debug routine that runs when using the default entry point in
+// ESM mode.
+import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import AdmZip from 'adm-zip';
 import XLSX from 'xlsx';
 
