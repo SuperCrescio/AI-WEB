@@ -15,7 +15,7 @@ const {
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
   SUPABASE_SERVICE_ROLE_KEY,
-} = process.env.example;
+} = process.env;
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   throw new Error('SUPABASE_URL e SUPABASE_ANON_KEY devono essere definiti');
