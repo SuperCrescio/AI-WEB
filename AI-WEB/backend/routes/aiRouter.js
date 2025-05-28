@@ -1,68 +1,73 @@
-// backend/routes/aiRouter.js
-const express = require('express');
-const fileApi = require('../utils/fileApi');
-const openaiApi = require('../utils/openaiApi');
+import express from 'express';
+import { supabaseAdmin } from '../utils/supabaseClient.js';
+import { askOpenAI } from '../utils/openaiApi.js';
+import { parsePromptTemplate } from '../utils/promptUtil.js';
+import { extractTextFromFile } from '../utils/fileUtil.js';
 
-const router = express.Router();
+export const aiRouter = express.Router();
 
-/**
- * POST /api/ai/generate
- * Corpo: { prompt: string, filenames?: [string] }
- * Aggiunge il contenuto dei file al prompt e genera l'interfaccia AI.
- */
-router.post('/generate', async (req, res) => {
+aiRouter.post('/chat', async (req, res) => {
+  const userId = req.user.id;
+  let { promptId, promptContent, messages, message, fileIds } = req.body;
+
+  if (!promptId && !promptContent) {
+    return res.status(400).json({ error: 'Specificare promptId o promptContent' });
+  }
   try {
-    const userId = req.user.id;
-    const { prompt, filenames } = req.body;
-    if (!prompt) {
-      return res.status(400).json({ error: 'Il prompt è obbligatorio' });
+    let systemPrompt = promptContent;
+    if (!systemPrompt) {
+      const { data: prompts } = await supabaseAdmin
+        .from('prompts')
+        .select('content')
+        .eq('id', promptId)
+        .eq('user_id', userId);
+      if (!prompts || !prompts.length) {
+        return res.status(404).json({ error: 'Prompt non trovato' });
+      }
+      systemPrompt = prompts[0].content;
     }
-    let finalPrompt = prompt;
-    if (filenames && Array.isArray(filenames) && filenames.length > 0) {
-      let combinedContent = '';
-      for (const name of filenames) {
-        try {
-          const contentBuffer = await fileApi.getFileContent(userId, name);
-          combinedContent += '\n' + contentBuffer.toString();
-        } catch {
-          return res.status(400).json({ error: `Impossibile leggere il file: ${name}` });
+    systemPrompt = await parsePromptTemplate(systemPrompt, req.user);
+    const conversation = [];
+    conversation.push({ role: 'system', content: systemPrompt });
+    if (fileIds && Array.isArray(fileIds) && fileIds.length > 0) {
+      let fileContents = '';
+      for (const fileId of fileIds) {
+        const { data: files } = await supabaseAdmin
+          .from('files')
+          .select('filename, mimetype, path')
+          .eq('id', fileId)
+          .eq('user_id', userId);
+        if (files && files.length > 0) {
+          const file = files[0];
+          let text = '';
+          try {
+            text = await extractTextFromFile(file.path, file.mimetype);
+          } catch {}
+          if (text) {
+            const truncated = text.length > 4000 ? text.substring(0, 4000) + '...' : text;
+            fileContents += `\n[Contenuto del file "${file.filename}"]\n${truncated}\n`;
+          }
         }
       }
-      finalPrompt += '\n\nContenuto dei file allegati:\n' + combinedContent;
+      if (fileContents) {
+        conversation.push({ role: 'system', content: `Informazioni aggiuntive dai file allegati dall'utente:${fileContents}` });
+      }
     }
-    const result = await openaiApi.generate(finalPrompt);
-    res.json({ result });
-  } catch (error) {
-    console.error('Errore AI /generate:', error);
-    res.status(500).json({ error: 'Errore durante la generazione AI' });
+    if (messages && Array.isArray(messages)) {
+      for (const msg of messages) {
+        if (!msg.role || !msg.content) continue;
+        if (msg.role === 'user' || msg.role === 'assistant') {
+          conversation.push({ role: msg.role, content: msg.content });
+        }
+      }
+    }
+    if (message) {
+      conversation.push({ role: 'user', content: message });
+    }
+
+    const aiResponse = await askOpenAI(conversation);
+    return res.status(200).json({ message: aiResponse });
+  } catch (err) {
+    return res.status(500).json({ error: 'Errore durante la generazione della risposta AI' });
   }
 });
-
-/**
- * POST /api/ai/analyze
- * Corpo: { filename: string }
- * Analizza il contenuto di un file tramite OpenAI (e.g. sommario).
- */
-router.post('/analyze', async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { filename } = req.body;
-    if (!filename) {
-      return res.status(400).json({ error: 'Il nome del file è obbligatorio' });
-    }
-    let contentBuffer;
-    try {
-      contentBuffer = await fileApi.getFileContent(userId, filename);
-    } catch {
-      return res.status(400).json({ error: `Impossibile leggere il file: ${filename}` });
-    }
-    const content = contentBuffer.toString();
-    const analysis = await openaiApi.analyze(content);
-    res.json({ analysis });
-  } catch (error) {
-    console.error('Errore AI /analyze:', error);
-    res.status(500).json({ error: 'Errore durante l\'analisi AI' });
-  }
-});
-
-module.exports = router;
