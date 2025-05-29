@@ -3,13 +3,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4';
 const openaiConfig = new Configuration({ apiKey: OPENAI_API_KEY });
 const openai = new OpenAIApi(openaiConfig);
 
 export async function askOpenAI(messages) {
   try {
     const response = await openai.createChatCompletion({
-      model: 'gpt-4',
+      model: OPENAI_MODEL,
       messages: messages,
       temperature: 0.7,
     });

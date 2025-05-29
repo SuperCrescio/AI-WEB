@@ -2,18 +2,18 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 // Genera l'interfaccia AI (prompt + elenco file)
-export async function sendAIMessage({ prompt, filenames = [] }, token) {
+export async function sendAIMessage({ promptContent, fileIds = [] }, token) {
   const res = await fetch(`${API_URL}/ai/chat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
     },
-    body: JSON.stringify({ prompt, filenames }),
+    body: JSON.stringify({ promptContent, fileIds }),
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error);
-  return data.result;
+  return data.message;
 }
 
 // Analizza un file tramite AI

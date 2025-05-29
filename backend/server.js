@@ -26,6 +26,10 @@ app.use('/api/files', fileRouter);
 app.use('/api/prompts', promptRouter);
 app.use('/api/ai', aiRouter);
 
-app.listen(PORT, () => {
-  console.log(`AI-WEB backend listening on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`AI-WEB backend listening on http://localhost:${PORT}`);
+  });
+}
+
+export default app;

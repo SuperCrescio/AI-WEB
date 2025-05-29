@@ -5,6 +5,7 @@ export { default as PromptGenAI } from "./PromptGenAI";
 export { default as PreviewPanel } from "./PreviewPanel";
 export { default as UniversalUploader } from "./UniversalUploader";
 export { default as NotificationStack } from "./NotificationStack";
+export { default as ProjectManager } from "./ProjectManager";
 
 // Componenti UI di base
 export { default as Text } from "./Text";
