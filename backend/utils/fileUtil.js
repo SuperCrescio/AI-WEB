@@ -6,6 +6,7 @@ import path from 'path';
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import AdmZip from 'adm-zip';
 import XLSX from 'xlsx';
+import { createWorker } from 'tesseract.js';
 
 export async function extractTextFromFile(filePath, mimeType) {
   const ext = path.extname(filePath).toLowerCase();
@@ -35,6 +36,19 @@ export async function extractTextFromFile(filePath, mimeType) {
       const sheet = workbook.Sheets[sheetName];
       const csvText = XLSX.utils.sheet_to_csv(sheet);
       return csvText;
+    }
+    if (mimeType.startsWith('image/') && (ext === '.png' || ext === '.jpg' || ext === '.jpeg')) {
+      const worker = await createWorker();
+      try {
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        const { data: { text } } = await worker.recognize(filePath);
+        await worker.terminate();
+        return text;
+      } catch (err) {
+        console.error('Errore OCR:', err);
+        await worker.terminate();
+      }
     }
     return '';
   } catch (err) {

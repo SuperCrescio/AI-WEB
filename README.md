@@ -24,9 +24,20 @@ Questa documentazione è pensata per:
 ## Avvio rapido
 1. Copiare `backend/.env.example` in `backend/.env` e inserire le proprie chiavi
    Supabase e OpenAI. **Non condividere o versionare il file `.env` reale.**
-2. Installare le dipendenze con `npm install` all'interno di `backend` e `frontend`.
-3. Avviare il backend con `npm start` (cartella `backend`) e il frontend con
+   Il file contiene anche la variabile `OPENAI_MODEL` per impostare il modello
+   di OpenAI da utilizzare.
+2. Copiare `frontend/.env.example` in `frontend/.env` se si desidera
+   configurare l'URL dell'API.
+3. Installare le dipendenze con `npm install` all'interno di `backend` e `frontend`.
+4. Avviare il backend con `npm start` (cartella `backend`) e il frontend con
    `npm run dev` (cartella `frontend`).
+
+### Test automatici
+Per eseguire i test di esempio in backend e frontend:
+```bash
+cd backend && npm test
+cd ../frontend && npm test
+```
 
 ## Struttura del progetto
 - **backend/** – codice server Node/Express e utilità
@@ -34,3 +45,6 @@ Questa documentazione è pensata per:
 - **schema.sql** – esempio di schema per Supabase
 
 Per ulteriori dettagli consultare i singoli file della repository.
+
+## Licenza
+Questo progetto è distribuito con licenza MIT. Vedi il file [LICENSE](LICENSE).
