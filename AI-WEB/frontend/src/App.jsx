@@ -86,7 +86,8 @@ function App() {
   const handleGenerate = async () => {
     try {
       setOutput("...generazione AI in corso...");
-      const result = await sendAIMessage({ prompt, filenames: files }, token);
+      const fileIds = files.map(f => f.id);
+      const result = await sendAIMessage({ prompt, fileIds }, token);
       setOutput(result);
       setNotifications(n => [...n, { id: Date.now(), message: "UI generata da AI!", type: "success" }]);
     } catch (err) {

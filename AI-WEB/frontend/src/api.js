@@ -1,30 +1,30 @@
 // frontend/src/api.js
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
-// Genera l'interfaccia AI (prompt + elenco file)
-export async function sendAIMessage({ prompt, filenames = [] }, token) {
+// Genera l'interfaccia AI (prompt e lista di file ID)
+export async function sendAIMessage({ prompt, fileIds = [] }, token) {
   const res = await fetch(`${API_URL}/ai/chat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
     },
-    body: JSON.stringify({ prompt, filenames }),
+    body: JSON.stringify({ promptContent: prompt, fileIds }),
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error);
-  return data.result;
+  return data.message;
 }
 
 // Analizza un file tramite AI
-export async function analyzeFile({ filename }, token) {
+export async function analyzeFile({ fileId }, token) {
   const res = await fetch(`${API_URL}/ai/analyze`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
     },
-    body: JSON.stringify({ filename }),
+    body: JSON.stringify({ fileId }),
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error);

@@ -12,8 +12,10 @@ Questa repository contiene l'applicazione **AI-WEB**. Il progetto permette di cr
 ## Avvio rapido
 1. Copiare `backend/.env.example` in `backend/.env` e impostare `OPENAI_API_KEY`,
    `SUPABASE_URL`, `SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY` con i
-   valori del proprio progetto Supabase e OpenAI.
+   valori del proprio progetto Supabase e OpenAI. **Non condividere o
+   versionare il file `.env` contenente le chiavi reali.**
 2. Installare le dipendenze eseguendo `npm install` dentro le cartelle `backend` e `frontend`.
 3. Avviare il backend con `npm start` (dalla cartella `backend`) e il frontend con `npm run dev` (dalla cartella `frontend`).
+4. Aprire `http://localhost:5173` nel browser per utilizzare l'app.
 
 Per maggiori dettagli consultare la documentazione nei singoli file del progetto.
