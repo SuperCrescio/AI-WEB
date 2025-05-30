@@ -12,6 +12,7 @@ che utilizza Supabase e l'API GPT-4o di OpenAI.
 - Autenticazione e database tramite Supabase
 - Gestione di prompt personalizzati
 - Upload di file con estrazione testo automatica
+  (supporto OCR per immagini PNG/JPG)
 - API Node/Express pronte all'uso
 - Frontend reattivo con anteprima dinamica dell'app generata
 
@@ -24,8 +25,10 @@ Questa documentazione è pensata per:
 ## Avvio rapido
 1. Copiare `backend/.env.example` in `backend/.env` e inserire le proprie chiavi
    Supabase e OpenAI. **Non condividere o versionare il file `.env` reale.**
-2. Installare le dipendenze con `npm install` all'interno di `backend` e `frontend`.
-3. Avviare il backend con `npm start` (cartella `backend`) e il frontend con
+   È possibile specificare il modello OpenAI desiderato impostando `OPENAI_MODEL`.
+2. Copiare `frontend/.env.example` in `frontend/.env` per configurare l'URL delle API.
+3. Installare le dipendenze con `npm install` all'interno di `backend` e `frontend`.
+4. Avviare il backend con `npm start` (cartella `backend`) e il frontend con
    `npm run dev` (cartella `frontend`).
 
 ## Struttura del progetto
@@ -34,3 +37,7 @@ Questa documentazione è pensata per:
 - **schema.sql** – esempio di schema per Supabase
 
 Per ulteriori dettagli consultare i singoli file della repository.
+
+## Licenza
+
+Questo progetto è distribuito con licenza MIT. Vedi il file `LICENSE` per i dettagli.

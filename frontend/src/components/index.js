@@ -17,3 +17,4 @@ export { default as Timer } from "./Timer";
 export { default as Stepper } from "./Stepper";
 export { default as Switch } from "./Switch";
 export { default as UserBubble } from "./UserBubble";
+export { default as ProjectManager } from "./ProjectManager";

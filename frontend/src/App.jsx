@@ -1,6 +1,6 @@
 // frontend/src/App.jsx
 import React, { useState, useEffect } from "react";
-import { PromptEditor, PromptDropdown, PromptGenAI, PreviewPanel, UniversalUploader, NotificationStack } from "./components";
+import { PromptEditor, PromptDropdown, PromptGenAI, PreviewPanel, UniversalUploader, NotificationStack, ProjectManager } from "./components";
 import { sendAIMessage, listFiles, uploadFile, loginUser, registerUser } from "./api";
 import "./styles.css";
 
@@ -86,7 +86,10 @@ function App() {
   const handleGenerate = async () => {
     try {
       setOutput("...generazione AI in corso...");
-      const result = await sendAIMessage({ prompt, filenames: files }, token);
+      const result = await sendAIMessage({
+        prompt,
+        fileIds: files.map(f => f.id)
+      }, token);
       setOutput(result);
       setNotifications(n => [...n, { id: Date.now(), message: "UI generata da AI!", type: "success" }]);
     } catch (err) {
@@ -149,6 +152,7 @@ function App() {
         <PromptEditor value={prompt} onChange={setPrompt} />
         <PromptGenAI onGenerate={setPrompt} />
         <UniversalUploader onUpload={handleUpload} />
+        <ProjectManager token={token} onSelect={p => setPrompt(p.content)} />
         <button className="btn my-3" onClick={handleGenerate}>Genera AI-APP</button>
       </aside>
 
