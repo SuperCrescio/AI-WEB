@@ -9,7 +9,7 @@ const openai = new OpenAIApi(openaiConfig);
 export async function askOpenAI(messages) {
   try {
     const response = await openai.createChatCompletion({
-      model: 'gpt-4',
+      model: process.env.OPENAI_MODEL || 'gpt-4',
       messages: messages,
       temperature: 0.7,
     });

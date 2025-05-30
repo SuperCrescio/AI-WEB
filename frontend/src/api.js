@@ -2,18 +2,18 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 // Genera l'interfaccia AI (prompt + elenco file)
-export async function sendAIMessage({ prompt, filenames = [] }, token) {
+export async function sendAIMessage({ prompt, fileIds = [] }, token) {
   const res = await fetch(`${API_URL}/ai/chat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
     },
-    body: JSON.stringify({ prompt, filenames }),
+    body: JSON.stringify({ promptContent: prompt, fileIds }),
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error);
-  return data.result;
+  return data.message;
 }
 
 // Analizza un file tramite AI
@@ -48,6 +48,39 @@ export async function uploadFile(file, token) {
     method: "POST",
     headers: { ...(token && { Authorization: `Bearer ${token}` }) },
     body: formData,
+  });
+  return await res.json();
+}
+
+// Prompt API
+export async function listPrompts(token) {
+  const res = await fetch(`${API_URL}/prompts`, {
+    headers: { ...(token && { Authorization: `Bearer ${token}` }) }
+  });
+  const data = await res.json();
+  return data.prompts || [];
+}
+
+export async function createPrompt(title, content, token) {
+  const res = await fetch(`${API_URL}/prompts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` })
+    },
+    body: JSON.stringify({ title, content })
+  });
+  return await res.json();
+}
+
+export async function updatePrompt(id, title, content, token) {
+  const res = await fetch(`${API_URL}/prompts/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` })
+    },
+    body: JSON.stringify({ title, content })
   });
   return await res.json();
 }

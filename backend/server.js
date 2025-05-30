@@ -8,7 +8,7 @@ import { promptRouter } from './routes/promptRouter.js';
 import { aiRouter } from './routes/aiRouter.js';
 import { authMiddleware } from './utils/auth.js';
 
-const app = express();
+export const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
@@ -26,6 +26,8 @@ app.use('/api/files', fileRouter);
 app.use('/api/prompts', promptRouter);
 app.use('/api/ai', aiRouter);
 
-app.listen(PORT, () => {
-  console.log(`AI-WEB backend listening on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`AI-WEB backend listening on http://localhost:${PORT}`);
+  });
+}
