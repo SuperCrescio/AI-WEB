@@ -30,6 +30,11 @@ Questa documentazione è pensata per:
 3. Installare le dipendenze con `npm install` all'interno di `backend` e `frontend`.
 4. Avviare il backend con `npm start` (cartella `backend`) e il frontend con
    `npm run dev` (cartella `frontend`).
+   L'app sarà accessibile su `http://localhost:5173/`. Se si esegue in Docker o
+   in ambienti remoti, avviare Vite con l'opzione `--host` oppure utilizzare il
+   `vite.config.js` fornito, che imposta `host: true`.
+   Assicurarsi che la porta configurata per il backend corrisponda a quella
+   specificata in `VITE_API_URL` (ad esempio `3000`).
 
 ## Struttura del progetto
 - **backend/** – codice server Node/Express e utilità
